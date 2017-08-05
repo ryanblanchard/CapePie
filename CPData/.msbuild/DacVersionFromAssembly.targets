@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+    <Target Name="SetDacVersionToAssemblyVersion" AfterTargets="CoreCompile" Condition=" '$(EnableDacVersionFromAssembly)' == 'True' ">
+        <GetAssemblyIdentity AssemblyFiles="$(IntermediateTargetFullFileName)">
+            <Output TaskParameter="Assemblies" PropertyName="IntermediateTargetAssembly" />
+        </GetAssemblyIdentity>
+        <PropertyGroup>
+            <DacVersion>$(IntermediateTargetAssembly.Split(',')[1].Split('=')[1])</DacVersion>
+        </PropertyGroup>
+    </Target>
+
+    <Target Name="CopyDacToDacPackagesFoldersAfterBuild" BeforeTargets="AfterBuild" Condition=" '$(EnableDacVersionFromAssembly)' == 'True' ">
+        <!-- Create the dac_packages\latest and dac_packages\archive directories if they do not exist. -->
+        <MakeDir Directories="$(SolutionDir)dac_packages\latest" Condition="!Exists('$(SolutionDir)dac_packages\latest')" />
+        <MakeDir Directories="$(SolutionDir)dac_packages\archive\$(TargetName)" Condition="!Exists('$(SolutionDir)dac_packages\archive\$(TargetName)')" />
+
+        <!-- Delete all DAC Packages in the dac_packages\latest directory matching the DAC Package Target Name. -->
+        <ItemGroup>
+            <DacFileToDelete Include="$(SolutionDir)dac_packages\latest\**\$(TargetName)*.dacpac" />
+            <ReportFileToDelete Include="$(SolutionDir)dac_packages\latest\**\$(TargetName).*report.xml" />
+            <DeployScriptFileToDelete Include="$(SolutionDir)dac_packages\latest\**\$(TargetName).*script.sql" />
+        </ItemGroup>
+        <Delete Files="@(DacFileToDelete)" TreatErrorsAsWarnings="true" />
+        <Delete Files="@(ReportFileToDelete)" TreatErrorsAsWarnings="true" />
+        <Delete Files="@(DeployScriptFileToDelete)" TreatErrorsAsWarnings="true" />
+
+        <!-- Copy the DAC Package to the dac_packages\archive and dac_packages\latest directories. -->
+        <Copy SourceFiles="$(OutputPath)$(TargetName).dacpac" DestinationFiles="$(SolutionDir)dac_packages\latest\$(TargetName)_$(DacVersion).dacpac" />
+        <Copy SourceFiles="$(OutputPath)$(TargetName).dacpac" DestinationFiles="$(SolutionDir)dac_packages\archive\$(TargetName)\$(TargetName)_$(DacVersion).dacpac" />
+    </Target>
+</Project>

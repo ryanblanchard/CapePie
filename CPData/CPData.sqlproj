@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>CPData</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{eea867ff-60e4-446e-b620-f37e4d504a6b}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql100DatabaseSchemaProvider</DSP>
+    <OutputType>
+    </OutputType>
+    <RootPath>
+    </RootPath>
+    <OutputPath>bin/$(Configuration)</OutputPath>
+    <RootNamespace>CPData</RootNamespace>
+    <AssemblyName>CPData</AssemblyName>
+    <ModelCollation>1033, CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <IncludeSchemaNameInFileName>True</IncludeSchemaNameInFileName>
+    <EnableFullTextSearch>False</EnableFullTextSearch>
+    <TargetFrameworkProfile />
+    <GenerateSqlClrSymbols>False</GenerateSqlClrSymbols>
+    <GenerateSqlClrDdl>False</GenerateSqlClrDdl>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'release|AnyCPU' ">
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunSqlCodeAnalysis>False</RunSqlCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="properties" />
+    <Folder Include="data" />
+    <Folder Include="data\reference" />
+    <Folder Include="schemas" />
+    <Folder Include="schemas\dbo" />
+    <Folder Include="schemas\dbo\tables" />
+    <Folder Include="schemas\dbo\views" />
+    <Folder Include="schemas\dbo\funcs" />
+    <Folder Include="schemas\dbo\sprocs" />
+    <Folder Include="schemas\template" />
+    <Folder Include="schemas\template\tables" />
+    <Folder Include="publish" />
+    <Folder Include="security" />
+    <Folder Include="scripts" />
+    <Folder Include=".build_scripts" />
+    <Folder Include=".msbuild" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="schemas\template\tables\template.customers.sql" />
+    <Build Include="security\schemas.sql" />
+    <Build Include="schemas\dbo\tables\dbo.ProductMaster.sql" />
+    <Build Include="schemas\dbo\tables\dbo.Category.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="publish\CPData.publish.xml" />
+    <None Include=".build_scripts\build.ps1" />
+    <None Include=".build_scripts\publish.ps1" />
+    <None Include=".msbuild\DacVersionFromAssembly.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="scripts\post_deploy.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PreDeploy Include="scripts\pre_deploy.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="CPData.refactorlog" />
+  </ItemGroup>
+  <!-- BEGIN - DAC Version - import targets file -->
+  <Import Project="$(ProjectDir).msbuild\DacVersionFromAssembly.targets" Condition="Exists('$(ProjectDir).msbuild\DacVersionFromAssembly.targets')" />
+  <Target Name="PrepareDacVersionFromAssembly" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <EnableDacVersionFromAssembly>True</EnableDacVersionFromAssembly>
+      <ErrorText>This project references Custom MSBuild targets that are missing on this computer. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(ProjectDir).msbuild\DacVersionFromAssembly.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(ProjectDir).msbuild\DacVersionFromAssembly.targets'))" />
+  </Target>
+  <!-- END - DAC Version -->
+</Project>
