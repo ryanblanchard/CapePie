@@ -13,6 +13,7 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Description = A simple business finance application
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9A2EFF07-5A41-40B1-B844-366429A52314}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
